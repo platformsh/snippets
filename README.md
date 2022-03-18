@@ -27,7 +27,7 @@
 Platform.sh maintains a list of scripts that may be used within the template to ease its fine-tuning.
 
 ## Contents:
-* [`raw.githubusercontent.com rate limit`](#raw.githubusercontent.com-rate-limit)
+* [`raw.githubusercontent.com rate limit`](#rawgithubusercontentcom-rate-limit)
 * [`Install a specific version of Node on non-Node JS container`](#Install-a-specific-version-of-Node-on-non-Node-JS-container)
 
 
