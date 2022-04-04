@@ -29,7 +29,7 @@ Platform.sh maintains a list of scripts that may be used within the template to 
 ## Contents:
 * [`raw.githubusercontent.com rate limit`](#rawgithubusercontentcom-rate-limit)
 * [`Install a specific version of Node on non-Node JS container`](#Install-a-specific-version-of-Node-on-non-Node-JS-container)
-
+* [`Platformify script`](#platformify-script)
 
 ### raw.githubusercontent.com rate limit
 
@@ -58,3 +58,20 @@ curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install
 ```
 curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install_node.sh | { bash /dev/fd/3 -v 17.5 -y; } 3<&0
 ```
+
+### Platformify script
+
+The `platformify` script will download the `.platform.app.yaml` file and all the
+files needed to run a specific project on Platform.sh.
+
+To platformify a Laravel project:
+```
+sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/platformify.sh') -t laravel
+```
+
+To platformify a Laravel project and a speficic folder:
+```
+sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/platformify.sh') -t laravel -p path/to/dir
+```
+
+When ran on an empty folder, the script will clone the full template.
