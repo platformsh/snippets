@@ -27,14 +27,27 @@
 Platform.sh maintains a list of scripts that may be used within the template to ease its fine-tuning.
 
 ## Contents:
+* [`raw.githubusercontent.com rate limit`](#rawgithubusercontentcom-rate-limit)
 * [`Install a specific version of Node on non-Node JS container`](#Install-a-specific-version-of-Node-on-non-Node-JS-container)
 
 
+### raw.githubusercontent.com rate limit
+
+On rare occasion, the rate limit on raw.githubusercontent.com my be hit. It can
+then be recommended to use a [Personal Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) to benefit
+from a much higher rate limit.
+
+```
+curl -H "Authorization: Bearer PERSONAL_TOKEN" -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/script.sh | { bash /dev/fd/3 PARAMETERS; } 3<&0
+```
+
 ### Install a specific version of Node on non-Node JS container
 
-The [documentation](https://docs.platform.sh/languages/nodejs.html) describes how to specify the Node version to use and/or how to add Yarn to the NodeJS container.
+The [documentation](https://docs.platform.sh/languages/nodejs.html) describes how
+to specify the Node version to use and/or how to add Yarn to the NodeJS container.
 
-For other containers, such as the PHP one, 
+For other containers, such as the PHP one, it may be needed to rely on a specific
+version of NodeJS, and use Yarn as well.
 
 #### Install the LTS version of node
 ```
