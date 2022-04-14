@@ -153,7 +153,7 @@ platformify()
             fi;
 
             if [[ ! -f "$INSTALL_DIR/$current_dir$name" ]]; then
-                curl -s -o "$INSTALL_DIR/$current_dir$name" $(_jq '.url')
+                curl -s -o "$INSTALL_DIR/$current_dir$name" $(_jq '.download_url')
                 printf "${GREEN}File downloaded${NC}.\n"
                 continue
             fi
