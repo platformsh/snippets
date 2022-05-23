@@ -30,6 +30,7 @@ Platform.sh maintains a list of scripts that may be used within the template to 
 * [`raw.githubusercontent.com rate limit`](#rawgithubusercontentcom-rate-limit)
 * [`Install a specific version of Node on non-Node JS container`](#Install-a-specific-version-of-Node-on-non-Node-JS-container)
 * [`Platformify script`](#platformify-script)
+* [`Install Swoole`](#install-swoole)
 
 ### raw.githubusercontent.com rate limit
 
@@ -75,3 +76,17 @@ sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/pl
 ```
 
 When ran on an empty folder, the script will clone the full template.
+
+### Install Swoole
+
+The `install_swoole` script will install and enable the Swoole or Open Swoole extension in a PHP container.
+
+To install Open Swoole v4.11.0:
+```
+sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh') openswoole 4.11.0
+```
+
+To install Swoole v4.8.10:
+```
+sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh') swoole 4.8.10
+```
