@@ -91,7 +91,7 @@ To install Swoole v4.8.10:
 sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh') swoole 4.8.10
 ```
 
-### Install Relay
+### Install Relay (Redis)
 
 The `install-relay` script will install and enable the [Relay](https://relay.so) extension in a PHP container.
 
@@ -103,4 +103,13 @@ curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install
 To install Relay @dev:
 ```
 curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install-relay.sh | { bash /dev/fd/3 dev ; } 3<&0
+```
+
+### Install PhpRedis (Redis)
+
+The `install-phpredis` script will install and enable the [PhpRedis](https://github.com/phpredis/phpredis) extension in a PHP container.
+
+To install PhpRedis v5.1.1:
+```
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install-phpredis.sh | { bash /dev/fd/3 5.1.1 ; } 3<&0
 ```
