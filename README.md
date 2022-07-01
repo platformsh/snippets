@@ -34,7 +34,7 @@ Platform.sh maintains a list of scripts that may be used within the template to 
 
 ### raw.githubusercontent.com rate limit
 
-On rare occasion, the rate limit on raw.githubusercontent.com my be hit. It can
+On rare occasion, the rate limit on `raw.githubusercontent.com` my be hit. It can
 then be recommended to use a [Personal Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) to benefit
 from a much higher rate limit.
 
@@ -89,4 +89,18 @@ sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/in
 To install Swoole v4.8.10:
 ```
 sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh') swoole 4.8.10
+```
+
+### Install Relay
+
+The `install-relay` script will install and enable the [Relay](https://relay.so) extension in a PHP container.
+
+To install Relay v0.4.2:
+```
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install-relay.sh | { bash /dev/fd/3 0.4.2 ; } 3<&0
+```
+
+To install Relay @dev:
+```
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install-relay.sh | { bash /dev/fd/3 dev ; } 3<&0
 ```
