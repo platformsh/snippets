@@ -96,8 +96,9 @@ curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install
 The `install-relay` script will install and enable the [Relay](https://relay.so) extension in a PHP container.
 
 To install Relay v0.4.2:
+Note the version should be prefixed with `v` (**v**0.4.2)
 ```
-curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install-relay.sh | { bash /dev/fd/3 0.4.2 ; } 3<&0
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install-relay.sh | { bash /dev/fd/3 v0.4.2 ; } 3<&0
 ```
 
 To install Relay @dev:
