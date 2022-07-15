@@ -67,12 +67,12 @@ files needed to run a specific project on Platform.sh.
 
 To platformify a Laravel project:
 ```
-sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/platformify.sh') -t laravel
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/platformify.sh | { bash /dev/fd/3 -t laravel ; } 3<&0
 ```
 
 To platformify a Laravel project and a speficic folder:
 ```
-sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/platformify.sh') -t laravel -p path/to/dir
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/platformify.sh | { bash /dev/fd/3 -t laravel -p path/to/dir ; } 3<&0
 ```
 
 When ran on an empty folder, the script will clone the full template.
@@ -83,12 +83,12 @@ The `install_swoole` script will install and enable the Swoole or Open Swoole ex
 
 To install Open Swoole v4.11.0:
 ```
-sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh') openswoole 4.11.0
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh | { bash /dev/fd/3 openswoole 4.11.0 ; } 3<&0
 ```
 
 To install Swoole v4.8.10:
 ```
-sh <( curl -s 'https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh') swoole 4.8.10
+curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install_swoole.sh | { bash /dev/fd/3 swoole 4.8.10 ; } 3<&0
 ```
 
 ### Install Relay (Redis)
