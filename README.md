@@ -52,13 +52,51 @@ version of NodeJS, and use Yarn as well.
 
 #### Install the LTS version of node
 ```
+export N_PREFIX=$HOME/.n
+export PATH=$N_PREFIX/bin:$PATH
 curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install_node.sh | { bash /dev/fd/3 -v lts; } 3<&0
 ```
 
 #### Install the 17.5 version of node with Yarn
 ```
+export N_PREFIX=$HOME/.n
+export PATH=$N_PREFIX/bin:$PATH
 curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install_node.sh | { bash /dev/fd/3 -v 17.5 -y; } 3<&0
 ```
+
+#### Use
+
+An example build hook is listed below. If using this snippet, do not add `corepack` as a [build dependency as outlined in the Platform.sh documentation](https://docs.platform.sh/languages/nodejs.html#use-yarn-as-a-package-manager), as it is already done for you. With the `-y` flag, the hook below will install Node.js 14.19.0 along with Yarn, afterwhich yarn commands can be run through corepack.
+
+```yaml
+name: app
+type: php:8.0
+dependencies:
+    php:
+        composer/composer: '^2'
+variables:
+    env:
+        NODE_VERSION: v14.19.0
+build:
+    flavor: none
+hooks:
+    build: |
+        set -e 
+        composer install
+        
+        export N_PREFIX=$HOME/.n
+        export PATH=$N_PREFIX/bin:$PATH
+        curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install_node.sh | { bash /dev/fd/3 -v $NODE_VERSION -y; } 3<&0
+        
+        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 corepack yarn install
+        PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1 corepack yarn packages:build
+        corepack yarn run less
+        corepack yarn run webpack
+```
+
+> **Note:**
+>
+> By default, `n` will try and install to `/usr/local/n`, which is not allowed on Platform.sh. You can instead specify the install location using the [variable `N_PREFIX` and then adding to `PATH`](https://github.com/tj/n#optional-environment-variables). If you will also need `n` outside of the build hook, add the two `export` lines to `.environment` as well. 
 
 ### Platformify script
 
