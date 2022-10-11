@@ -46,6 +46,7 @@ ensure_source() {
 
 		# Inject UUID into Relay extension.
 		uuid=$(cat /proc/sys/kernel/random/uuid)
+		sed -i "s/00000000-0000-0000-0000-000000000000/$uuid/" relay-pkg.so
 		sed -i "s/BIN:31415926-5358-9793-2384-626433832795/BIN:$uuid/" relay-pkg.so
 
 		ldd relay-pkg.so
