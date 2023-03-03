@@ -1,68 +1,114 @@
+# authors:
+#  - Thomas DI LUCCIO <thomas.diluccio@platform.sh>
+#  - Florent HUCK <florent.huck@platform.sh>
+
 run() {
     # Run the compilation process.
     cd $PLATFORM_CACHE_DIR || exit 1;
 
-    PHP_VERSION=$(php -r "echo PHP_VERSION;")
-    VERSION_PREFIX="v$1-php$PHP_VERSION"
-    VERSION_PREFIX="${VERSION_PREFIX//\./_}"
+    SWOOLE_PROJECT=$1;
+    SWOOLE_VERSION=$2;
 
-    if [ ! -f "${PLATFORM_CACHE_DIR}/$2/swoole-src/modules/$VERSION_PREFIX-$2.so" ]; then
-        ensure_source "$2"
-        checkout_version "v$1"
-        compile_source
-        move_extension $2 "$VERSION_PREFIX"
+    PHP_VERSION=$(php -r "echo PHP_VERSION;")
+    SWOOLE_BINARY="${SWOOLE_PROJECT}_v$2-php${PHP_VERSION}"
+    SWOOLE_BINARY="${SWOOLE_BINARY//\./_}"
+
+    if [ ! -f "${PLATFORM_CACHE_DIR}/${SWOOLE_BINARY}.so" ]; then
+        ensure_source "$SWOOLE_PROJECT" "$SWOOLE_VERSION"
+        compile_source "$SWOOLE_PROJECT"
+        move_extension "$SWOOLE_PROJECT" "$SWOOLE_BINARY"
     fi
 
-    copy_lib "$2" "$VERSION_PREFIX"
-    enable_lib "$2"
-}
-
-enable_lib() {
-    # Tell PHP to enable the extension.
-    echo "---------------------------------"
-    echo "Enabling Open Swoole extension."
-    echo -e "\nextension=${PLATFORM_APP_DIR}/$1.so" >> $PLATFORM_APP_DIR/php.ini
+    copy_lib "$SWOOLE_PROJECT" "$SWOOLE_BINARY"
+    enable_lib "$SWOOLE_PROJECT"
 }
 
 copy_lib() {
-    # Copy the compiled library to the application directory.
-    echo "---------------------------------"
-    echo "Installing Open Swoole extension."
-    cp $PLATFORM_CACHE_DIR/$1/swoole-src/modules/$2-$1.so $PLATFORM_APP_DIR/$1.so
+    echo "------------------------------------------------"
+    echo " Copying compiled extension to PLATFORM_APP_DIR "
+    echo "------------------------------------------------"
+
+    SWOOLE_PROJECT=$1;
+    SWOOLE_BINARY=$2;
+
+    cp "${PLATFORM_CACHE_DIR}/${SWOOLE_BINARY}.so" "${PLATFORM_APP_DIR}/${SWOOLE_PROJECT}.so"
+}
+
+enable_lib() {
+    echo "-------------------------------"
+    echo " Enabling extension in php.ini "
+    echo "-------------------------------"
+
+    SWOOLE_PROJECT=$1;
+
+    echo "extension=${PLATFORM_APP_DIR}/${SWOOLE_PROJECT}.so" >> $PLATFORM_APP_DIR/php.ini
 }
 
 move_extension() {
-    echo "---------------------------------"
-    echo "Moving built extension to identified folder."
-    mv $PLATFORM_CACHE_DIR/$1/swoole-src/modules/$1.so $PLATFORM_CACHE_DIR/$1/swoole-src/modules/$2-$1.so
-}
+    echo "---------------------------------------"
+    echo " Moving and caching compiled extension "
+    echo "---------------------------------------"
 
-checkout_version () {
-    # Check out the specific Git tag that we want to build.
-    git checkout "$1"
+    SWOOLE_PROJECT=$1;
+    SWOOLE_BINARY=$2;
+
+    mv "${PLATFORM_CACHE_DIR}/${SWOOLE_PROJECT}/swoole-src/modules/${SWOOLE_PROJECT}.so" "${PLATFORM_CACHE_DIR}/${SWOOLE_BINARY}.so"
 }
 
 ensure_source() {
-    # Ensure that the extension source code is available and up to date.
-    mkdir -p "$PLATFORM_CACHE_DIR/$1"
-    cd "$PLATFORM_CACHE_DIR/$1";
+    echo "---------------------------------------------------------------------"
+    echo " Ensuring that the extension source code is available and up to date "
+    echo "---------------------------------------------------------------------"
+
+    SWOOLE_PROJECT=$1;
+    SWOOLE_VERSION=$2;
+
+    mkdir -p "$PLATFORM_CACHE_DIR/$SWOOLE_PROJECT"
+    cd "$PLATFORM_CACHE_DIR/$SWOOLE_PROJECT" || exit 1;
 
     if [ -d "swoole-src" ]; then
         cd swoole-src || exit 1;
         git fetch --all --prune
     else
-        git clone https://github.com/$1/swoole-src.git
+        git clone https://github.com/$SWOOLE_PROJECT/swoole-src.git swoole-src
         cd swoole-src || exit 1;
+        git checkout "v$SWOOLE_VERSION"
+    fi
+
+    if [ -d "valgrind" ]; then
+        cd valgrind || exit 1;
+        git fetch --all --prune
+    else
+        git clone git://sourceware.org/git/valgrind.git valgrind
+        cd valgrind || exit 1;
     fi
 }
 
 compile_source() {
-    # Compile the extension.
-    phpize clean && \
-    phpize && \
-    ./configure && \
-    make && \
+
+    SWOOLE_PROJECT=$1;
+
+    echo "--------------------"
+    echo " Compiling valgrind "
+    echo "--------------------"
+
+    ./autogen.sh
+    ./configure --prefix="$PLATFORM_CACHE_DIR/$SWOOLE_PROJECT/swoole-src"
+    make
     make install
+
+    echo "---------------------"
+    echo " Compiling extension "
+    echo "---------------------"
+
+    cd ..
+    phpize
+    ./configure --enable-openssl \
+                --enable-mysqlnd \
+                --enable-sockets \
+                --enable-http2 \
+                --with-postgres
+    make
 }
 
 ensure_environment() {
@@ -98,4 +144,4 @@ ensure_arguments "$1" "$2"
 SWOOLE_PROJECT=$1;
 SWOOLE_VERSION=$(sed "s/^[=v]*//i" <<< "$2" | tr '[:upper:]' '[:lower:]')
 
-run "$SWOOLE_VERSION" "$SWOOLE_PROJECT"
+run "$SWOOLE_PROJECT" "$SWOOLE_VERSION"
