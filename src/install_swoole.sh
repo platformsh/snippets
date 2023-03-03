@@ -1,6 +1,7 @@
-# authors:
+# contributors:
 #  - Thomas DI LUCCIO <thomas.diluccio@platform.sh>
 #  - Florent HUCK <florent.huck@platform.sh>
+#  - Benjamin Hirsch <@hirschbenjamin>
 
 run() {
     # Run the compilation process.
