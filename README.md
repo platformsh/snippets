@@ -152,3 +152,19 @@ To install PhpRedis v5.1.1:
 ```
 curl -fsS https://raw.githubusercontent.com/platformsh/snippets/main/src/install-phpredis.sh | { bash /dev/fd/3 5.1.1 ; } 3<&0
 ```
+
+### Region audit
+
+The `region-audit` script with list projects within a Platform.sh or Upsun organization that are deployed to some subset of regions.
+
+To run the script for Platform.sh
+
+```bash
+https://raw.githubusercontent.com/platformsh/snippets/main/src/region-audit.sh | bash -s -- [ORG_NAME] [REGIONS] [platform|upsun]
+```
+
+For example
+
+```bash
+https://raw.githubusercontent.com/platformsh/snippets/main/src/region-audit.sh | bash -s -- my-org ch-1,uk-1,de-2,us-4 platform
+```
