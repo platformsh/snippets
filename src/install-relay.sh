@@ -6,7 +6,16 @@ run() {
 
 	os_arch=$(uname -m | sed 's/_/-/')
 	php_version=$(php -r 'echo substr(PHP_VERSION, 0, 3);')
-	relay_build="relay-${1}-php${php_version}-debian-${os_arch}+zts"
+	# Upsun stopped using ZTS from 8.2 and up
+	if test "${php_version}" = '8.2'; then
+	  relay_target=''
+	# Upsun's images from 8.3 and up are too new for libssl1
+	elif echo "${php_version}" '8.3' | awk '{exit !($1 >= $2)}'; then
+	  relay_target='+libssl3'
+	else
+	  relay_target='+zts'
+	fi
+	relay_build="relay-${1}-php${php_version}-debian-${os_arch}${relay_target}"
 
 	if [ ! -f "${PLATFORM_CACHE_DIR}/${relay_build}/redis-pkg.so" ]; then
 		ensure_patchelf
